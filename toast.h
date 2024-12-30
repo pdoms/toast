@@ -21,6 +21,41 @@ for the C programming language.
 #define RAW -1  //means unexecuted
 
 
+
+//Type that represents a test case function;
+typedef void(*Toasting)(BurntToast*);
+
+//Struct that holds the test case function and it's metadata. Both on user 
+//side and internally
+typedef struct {
+    //Test case function.
+    Toasting toast;
+    //Name of the test
+    const char* name;
+    //Restult identifier
+    int result;
+    //Time it took to run
+    double time;
+    //Time unit. Can either be us, ms, or s.
+    int time_unit;
+} SliceOfToast;
+
+//A Test Suite, with an array of tests (slices)
+typedef struct {
+    //Collection of test cases
+    SliceOfToast *slices;
+    //Num of test cases
+    size_t size;
+    //Capacity it holds.
+    size_t cap;
+    //Name of test-suite
+    const char* brand;
+    //time all tests took
+    double time;
+    //Time unit. Can either be us, ms, or s.
+    int time_unit;
+} PackOfToast;
+
 //This struct is passed to each test case function, provided is only the 
 //[index] of the current test case. All other fields can be set within a 
 //test case function. Short-cut functions for either success or failure are
@@ -39,29 +74,6 @@ typedef struct {
      to print the message. */
     int print_diagnostic;
 } BurntToast;
-
-//Type that represents a test case function;
-typedef void(*Toasting)(BurntToast*);
-
-//Struct that holds the test case function and it's metadata. Both on user 
-//side and internally
-typedef struct {
-    Toasting toast;
-    const char* name;
-    int result;
-    double time;
-    int time_unit;
-} SliceOfToast;
-
-//A Test Suite, with an array of tests (slices)
-typedef struct {
-    SliceOfToast *slices;
-    size_t size;
-    size_t cap;
-    const char* brand;
-    double time;
-    int time_unit;
-} PackOfToast;
 
 
 //Initializer function for a test case.

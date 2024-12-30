@@ -88,7 +88,7 @@ int main() {
 
 Use these to set the state/result of the outcome of a single test case.
 Or just use the corresponding `int`. `BurntToast.yummy\_or\_burnt` always
-defaults to [RAW](#### RAW).
+defaults to [RAW](./README.md####RAW).
 
 #### YUMMY
 `YUMMY` - a successful test case as _int_ `0`
@@ -104,24 +104,77 @@ defaults to [RAW](#### RAW).
 
 ### SliceOfToast
 
+This is basically a test case.
+
 | Field      | Type          | Domain       | Description                                                                            |
 |------------|---------------|--------------| ---------------------------------------------------------------------------------------|
 | toast      | `Toasting`    | user-defined | The test case function                                                                 |
 | name       | `const char*` | user-defined | The name of the test-case. Will be printed to stdout.                                  |
 | result     | `int`         | user-defined | Internally set to RAWor set to the result of each test case in the test case function. | 
 | time       | `double`      | internal     | The time a test-case took to finish.                                                   |
-| time\_unit | `int`         | internal     | The unit to interpre|
+| time\_unit | `int`         | internal     | The unit to interpret the time|
 
 ### PackOfToast
+
+This is basically the test-suite.
+
+| Field      | Type           | Domain       | Description                                                                           |
+|------------|----------------|--------------| --------------------------------------------------------------------------------------|
+| slices     | `SliceOfToast*`| user-defined | Array of test cases.                                                                  |
+| brand      | `const char*`  | user-defined | The name of the set of test-cases                                                     |
+| size       | `size_t`       | internal     | The size of `slices`                                                                  |
+| cap        | `size_t`       | internal     | Current capacity of `slices`                                                          |
+| time       | `double`       | internal     | The time all test-cases took to finish.                                               |
+| time\_unit | `int`          | internal     | The unit to interpre t the time                                                       |
+
 ### BurntToast
+
+This is struct is passed a reference to each test function as an argument in order to to set diagnostics and result identifiers.
+
+| Field             | Type   | Domain                 | Description                                                                          |
+|-------------------|----------------|------------------------|------------------------------------------------------------------------------|
+| index             | `int`   | toast-defined         | The index the test-case has inside `PackOfToast`.                                                                                                       |
+| yummy\_or\_burnt  | `int`   | internal/user-defined | The actual result, initialized to `Raw`, should be set inside the test-case-function |
+| diagnostic        | `char*` | user-defined          | The message to be printed in case of an error                                        |
+| print\_diagnostic | `int` | user-defined            | Whether or not to print the message. This is required internally.                    |
 
 ### Functions
 
 ### Toasting
+
+A type definition for the test-case-function.
+```c
+typedef void(*Toasting)(BurntToast*);
+```
+
 ### pre\_bake\_toast
+
+Initializer function for a test-case/[SliceOfToast](./README.md/####SliceOfToast).
+```c
+SliceOfToast pre_bake_toast(const char* name, Toasting toast);
+```
+
 ### plug\_in\_toaster
+
+Initializer function for a test-suite/[PackOfToast](./README.md/####PackOfToast).
+```c
+PackOfToast plug_in_toaster(const char* brand);
+```
+
 ### insert\_toasts
+
+Insert an array of test-cases/[slices](./README.md/####SliceOfToast) to a [PackOfToast](./README.md/####PackOfToast).
+```c
+void insert_toasts(PackOfToast *pack, SliceOfToast *slices, size_t len);
+```
+
 ### insert\_toast
+
+Insert a single test-cases/[slice](./README.md/####SliceOfToast) to a [PackOfToast](./README.md/####PackOfToast).
+```c
+void insert_toasts(PackOfToast *pack, SliceOfToast *slices, size_t len);
+```
+
 ### toast
 ### unplug\_toater
 ### burn\_toast
