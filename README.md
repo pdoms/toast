@@ -87,8 +87,8 @@ int main() {
 ### 1. Constants/Macros
 
 Use these to set the state/result of the outcome of a single test case.
-Or just use the corresponding `int`. [BurntToast.yummy\_or\_burnt](###BurntToast) always
-defaults to [RAW](### RAW).
+Or just use the corresponding `int`. `BurntToast.yummy\_or\_burnt` always
+defaults to [RAW](#### RAW).
 
 #### YUMMY
 `YUMMY` - a successful test case as _int_ `0`
@@ -101,7 +101,17 @@ defaults to [RAW](### RAW).
 
 ### 2. Structs
 
+
 ### SliceOfToast
+
+| Field      | Type          | Domain       | Description                                                                            |
+|------------|---------------|--------------| ---------------------------------------------------------------------------------------|
+| toast      | `Toasting`    | user-defined | The test case function                                                                 |
+| name       | `const char*` | user-defined | The name of the test-case. Will be printed to stdout.                                  |
+| result     | `int`         | user-defined | Internally set to RAWor set to the result of each test case in the test case function. | 
+| time       | `double`      | internal     | The time a test-case took to finish.                                                   |
+| time\_unit | `int`         | internal     | The unit to interpre|
+
 ### PackOfToast
 ### BurntToast
 
@@ -113,6 +123,6 @@ defaults to [RAW](### RAW).
 ### insert\_toasts
 ### insert\_toast
 ### toast
-### unplug\_toaster
+### unplug\_toater
 ### burn\_toast
 ### eat\_toast
