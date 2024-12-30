@@ -1,7 +1,8 @@
 # toast.h
 
 A small stb-style/header-only library for testing *c* code.
-This is still a work-in-progress, but fully usable.
+This is still a work-in-progress, but fully usable for small projects, as every
+test file needs to be compiled. Next steps would include to implement more files for tidier project structure. But is not needed as of now.
 
 ## Example
 ```c
@@ -88,7 +89,7 @@ int main() {
 
 Use these to set the state/result of the outcome of a single test case.
 Or just use the corresponding `int`. `BurntToast.yummy\_or\_burnt` always
-defaults to [RAW](./README.md####RAW).
+defaults to `RAW`.
 
 #### YUMMY
 `YUMMY` - a successful test case as _int_ `0`
@@ -149,33 +150,57 @@ typedef void(*Toasting)(BurntToast*);
 
 ### pre\_bake\_toast
 
-Initializer function for a test-case/[SliceOfToast](./README.md/####SliceOfToast).
+Initializer function for a test-case/`SliceOfToast`.
 ```c
 SliceOfToast pre_bake_toast(const char* name, Toasting toast);
 ```
 
 ### plug\_in\_toaster
 
-Initializer function for a test-suite/[PackOfToast](./README.md/####PackOfToast).
+Initializer function for a test-suite/`PackOfToast`.
 ```c
 PackOfToast plug_in_toaster(const char* brand);
 ```
 
 ### insert\_toasts
 
-Insert an array of test-cases/[slices](./README.md/####SliceOfToast) to a [PackOfToast](./README.md/####PackOfToast).
+Insert an array of test-cases/`SliceOfToast`s.
 ```c
 void insert_toasts(PackOfToast *pack, SliceOfToast *slices, size_t len);
 ```
 
 ### insert\_toast
 
-Insert a single test-cases/[slice](./README.md/####SliceOfToast) to a [PackOfToast](./README.md/####PackOfToast).
+Insert a single test-cases/`SliceOfToast`.
 ```c
 void insert_toasts(PackOfToast *pack, SliceOfToast *slices, size_t len);
 ```
 
 ### toast
-### unplug\_toater
+
+This function actually runs a `PackOfToast`.
+```c
+int toast(PackOfToast pack);
+```
+
 ### burn\_toast
+
+Short-cut helper function to set a `BurntToast`, i.e. a result of a test case.
+It always marks the test case as failed and alaways sets `print_diagnostic` to `1` as well as assigning the provided diagnostic string.
+```c
+void burn_toast(BurntToast *burnt, char* diagnostic);
+```
+
 ### eat\_toast
+
+Short-cut helper function to set a `BurntToast`, i.e. a result of a test case. 
+It simply sets the `yummy_or_burnt` to `YUMMY`.
+```c
+void eat_toast(BurntToast *burnt);
+```
+
+### unplug\_toater
+Frees allocated memory in the `PackOfToast`
+```c
+void unplug_toaster(PackOfToast pack);
+```
