@@ -1,6 +1,6 @@
 # toast.h
 
-A small stb-style header-only library for testing *c* code.
+A small stb-style/header-only library for testing *c* code.
 This is still a work-in-progress, but fully usable.
 
 ## Example
@@ -87,8 +87,8 @@ int main() {
 ### 1. Constants/Macros
 
 Use these to set the state/result of the outcome of a single test case.
-Or just use the corresponding `int`. [BurnToast.yummy\_or\_burnt] always
-defaults to [RAW].
+Or just use the corresponding `int`. [BurntToast.yummy\_or\_burnt](###BurntToast) always
+defaults to [RAW](### RAW).
 
 #### YUMMY
 `YUMMY` - a successful test case as _int_ `0`
