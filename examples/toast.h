@@ -1,5 +1,13 @@
+//MIT Licence Agreemeent can be found at the end of the file
+
+/*
+toast.h is a simple test suite, stb-style - header only library written in and
+for the C programming language. 
+*/
+
 #ifndef TOAST_H_
 #define TOAST_H_
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <errno.h>
@@ -8,46 +16,87 @@
 
 #define INITIAL_SLOTS 2 // has to be two because of standard toasters
 #define ERROR_BUFFER_CAP 1024
-#define YUMMY 0
-#define BURNT 1
-#define RAW -1
+#define YUMMY 0 //means success
+#define BURNT 1 //means failure
+#define RAW -1  //means unexecuted
 
+
+//This struct is passed to each test case function, provided is only the 
+//[index] of the current test case. All other fields can be set within a 
+//test case function. Short-cut functions for either success or failure are
+//provided -> `burn_toast` or `eat_toast` below.
 typedef struct {
     size_t index;
+    /* use this to set the result, to either YUMMY (0) for success, or BURNT (1)
+     for a failed test. */
     int yummy_or_burnt;
+    /*Set this to hold a message to be printed in the diagnostics section for
+     each failed test case.
+     */
     char *diagnostic;
+    /*Since the struct is reused over each test case, and reset in-between,
+     it is just easier to set print_diagnostic to tell the suite that it needs
+     to print the message. */
     int print_diagnostic;
 } BurntToast;
 
+//Type that represents a test case function;
 typedef void(*Toasting)(BurntToast*);
+
+
+//Struct that holds the test case function and it's metadata. Both on user 
+//side and internally
 typedef struct {
+    //Test case function.
     Toasting toast;
+    //Name of the test
     const char* name;
+    //Restult identifier
     int result;
+    //Time it took to run
     double time;
+    //Time unit. Can either be us, ms, or s.
     int time_unit;
 } SliceOfToast;
 
+//A Test Suite, with an array of tests (slices)
 typedef struct {
+    //Collection of test cases
     SliceOfToast *slices;
+    //Num of test cases
     size_t size;
+    //Capacity it holds.
     size_t cap;
+    //Name of test-suite
     const char* brand;
+    //time all tests took
     double time;
+    //Time unit. Can either be us, ms, or s.
     int time_unit;
 } PackOfToast;
 
+
+//Initializer function for a test case.
 SliceOfToast pre_bake_toast(const char* name, Toasting toast);
 
+//Initializer functoin for the test suite
 PackOfToast plug_in_toaster(const char* brand);
 
+//Insert array of test cases into test suites
 void insert_toasts(PackOfToast *pack, SliceOfToast *slices, size_t len);
+//Insert singe test case into test suites
 void insert_toast(PackOfToast *pack, SliceOfToast slice);
 
+//Run the test suite
 int toast(PackOfToast pack);
+//Clean/free memory
 void unplug_toaster(PackOfToast pack);
 
+//Helper function to populate a the test case functoin argument with a negative 
+//result
 void burn_toast(BurntToast *burnt, char* diagnostic);
+//Helper function to populate a the test case functoin argument with a positive 
+//result
 void eat_toast(BurntToast *burnt);
 
 #endif //TOAST_H_
@@ -275,3 +324,25 @@ void unplug_toaster(PackOfToast pack) {
 
 
 #endif //TOAST_IMPLEMENTATION
+
+
+/* Copyright 2025 Paulo Doms
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the “Software”), to deal 
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell 
+copies of the Software, and to permit persons to whom the Software is 
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE 
+SOFTWARE.
+ */
+

@@ -21,9 +21,28 @@ for the C programming language.
 #define RAW -1  //means unexecuted
 
 
+//This struct is passed to each test case function, provided is only the 
+//[index] of the current test case. All other fields can be set within a 
+//test case function. Short-cut functions for either success or failure are
+//provided -> `burn_toast` or `eat_toast` below.
+typedef struct {
+    size_t index;
+    /* use this to set the result, to either YUMMY (0) for success, or BURNT (1)
+     for a failed test. */
+    int yummy_or_burnt;
+    /*Set this to hold a message to be printed in the diagnostics section for
+     each failed test case.
+     */
+    char *diagnostic;
+    /*Since the struct is reused over each test case, and reset in-between,
+     it is just easier to set print_diagnostic to tell the suite that it needs
+     to print the message. */
+    int print_diagnostic;
+} BurntToast;
 
 //Type that represents a test case function;
 typedef void(*Toasting)(BurntToast*);
+
 
 //Struct that holds the test case function and it's metadata. Both on user 
 //side and internally
@@ -55,25 +74,6 @@ typedef struct {
     //Time unit. Can either be us, ms, or s.
     int time_unit;
 } PackOfToast;
-
-//This struct is passed to each test case function, provided is only the 
-//[index] of the current test case. All other fields can be set within a 
-//test case function. Short-cut functions for either success or failure are
-//provided -> `burn_toast` or `eat_toast` below.
-typedef struct {
-    size_t index;
-    /* use this to set the result, to either YUMMY (0) for success, or BURNT (1)
-     for a failed test. */
-    int yummy_or_burnt;
-    /*Set this to hold a message to be printed in the diagnostics section for
-     each failed test case.
-     */
-    char *diagnostic;
-    /*Since the struct is reused over each test case, and reset in-between,
-     it is just easier to set print_diagnostic to tell the suite that it needs
-     to print the message. */
-    int print_diagnostic;
-} BurntToast;
 
 
 //Initializer function for a test case.
