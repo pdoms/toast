@@ -95,7 +95,7 @@ Clean up can be performed with `$ make clean`.
 ### test setup
 1. As of now test files need to be located in a _source directory_, which defaults to `./tests`. 
 2. Testfiles should be named like so `*.test.c`, e.g. `foo.test.c` (as a path relative to the executable it would be `./tests/foo.test.c`
-3. Testfiles contain a collectio  of `SliceOfToast`s. In the form of
+3. Testfiles contain a collection of `SliceOfToast`s. In the form of
 ```c
 typedef void(*Toasting)(BurntToast*);
 ```
@@ -110,9 +110,11 @@ void add(BurntToast *burnt) {
     return; 
 }
 ```
-*NOTE* no header files need to be included nor a `main()` function is required as these cases get parsed and written to an actual .c file.
+*NOTE:* no header files for `toast` need to be included nor a `main()` function is required as these cases get parsed and written to an actual .c file 
+4. Create a `defin.test.c` file in the same directory. 
+Here you can put all your `#define`s and `#include`s, which will placed *after* the stb-style `#define`s and `#include`s of `toast.h`
 
-4. Run the test like so:
+5. Run the test like so:
 ```console
 ./toaster [OPTIONS]
 -d|--dir <dir>.......... specifies the src directory. [Default: './tests']

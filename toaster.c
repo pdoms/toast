@@ -16,6 +16,7 @@
 #define CC "gcc"
 #define GEN_FILE "tmp_toast.c"
 #define EXECUTABLE "tmp_toast"
+#define DEFIN_FILE "defin.test.c"
 #define LOGS "logs"
 #define NUM_GEN_FILES 3
 #define FILE_HEADER_LEN 108
@@ -256,6 +257,36 @@ typedef enum {
     END
 } FileParserState;
 
+char* read_defin(char* file_path) {
+    char full_path[strlen(args.dir) + strlen(file_path)+2];
+    sprintf(full_path, "%s/%s", args.dir, file_path);
+    printf(LOG_PREFIX" reading %s\n", full_path);
+    FILE *file = fopen(full_path, "r");
+    if (file == NULL) {
+        fprintf(stderr, LOG_PREFIX"[ERROR] could not open for '%s' because: %s\n", full_path, strerror(errno));
+        exit(1);
+
+    } 
+    if (fseek(file, 0, SEEK_END) < 0) {
+        fprintf(stderr, LOG_PREFIX"[ERROR] could not fseek for '%s' because: %s\n", full_path, strerror(errno));
+        fclose(file);
+        exit(1);
+    }
+    long len = ftell(file);
+    if (len < 0) {
+        fprintf(stderr, LOG_PREFIX"[ERROR] could not ftell for '%s' because: %s\n", full_path, strerror(errno));
+        fclose(file);
+        exit(1);
+    }
+    rewind(file);
+    char* buf = malloc(len);
+    if (fread(buf, len, 1, file) != 1) {
+        fprintf(stderr, LOG_PREFIX"[ERROR] could not read '%s'\n", file_path);
+        exit(1);
+    }
+    fclose(file);
+    return buf;
+}
 
 Case parse_case(FILE *file, char* file_name, int *done) {
     
@@ -359,13 +390,6 @@ int parse_file(Cases *cases, char* dir_name, char* file_name) {
         return 1;
     }
 
-    if (fseek(file, 0, SEEK_END) < 0) {
-        fprintf(stderr, LOG_PREFIX"[ERROR] could not fseek for '%s' because: %s\n", file_path, strerror(errno));
-        fclose(file);
-        return 1;
-    }
-
-    rewind(file);
 
     size_t file_name_len = strlen(file_name) + 1;
     int done = 0;
@@ -420,10 +444,15 @@ bool is_test_file(char *file_name) {
     return false;
 }
 
-int write_test_file(Cases *cases, FILE *file) {
+int write_test_file(Cases *cases, FILE *file, char* defines) {
     Str data = {0};
     
     append_many(&data, file_header, FILE_HEADER_LEN);
+    if (defines[0] != '\0') {
+        append_many(&data, defines, strlen(defines));
+        append_one(&data, '\n');
+        free(defines);
+    }
     for (size_t i = 0; i < cases->len; ++i) {
         append_many(&data, cases->items[i].function, strlen(cases->items[i].function));
     }
@@ -490,18 +519,19 @@ int main(int argc, char **argv) {
     }
     
     Cases cases = {0};
-
+    char* defines = {0};
     while ((de = readdir(source_dir)) != NULL) {
         if ((strcmp(de->d_name, ".") == 0) || (strcmp(de->d_name, "..") == 0)) {
             continue;
         }
-        if (is_test_file(de->d_name)) {
+        if (strcmp(de->d_name, DEFIN_FILE) == 0) {
+            defines = read_defin(de->d_name);
+        } else if (is_test_file(de->d_name)) {
             if (parse_file(&cases, args.dir, de->d_name) == 1) {
                 continue;
             }           
         } 
     }
-
     closedir(source_dir);
 
     FILE *tmp_file = fopen("tmp_toast.c", "w");
@@ -509,7 +539,7 @@ int main(int argc, char **argv) {
         fprintf(stderr, LOG_PREFIX"[ERROR] opening tmp_toast.c failed\n");
         return 1;
     }
-    write_test_file(&cases, tmp_file);
+    write_test_file(&cases, tmp_file, defines);
     free_cases(cases);
     fclose(tmp_file);
     int status;
