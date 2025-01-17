@@ -1,7 +1,10 @@
 CC=gcc
 CFLAGS=-Wall -Wextra
 
-all: toaster.c
-	$(CC) toaster.c -o toaster 
+toaster: toaster.c
+	$(CC) toaster.c $(CFLAGS) -o toaster 
+
+clean:
+	rm -rf toaster
 
 

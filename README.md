@@ -1,10 +1,10 @@
-# toast.h
+# Toaster v1.0.0
 
-A small stb-style/header-only library for testing *c* code.
-This is still a work-in-progress, but fully usable for small projects, as every
-test file needs to be compiled. Next steps would include to implement more files for tidier project structure. But is not needed as of now.
+A one part small stb-style/header-only library for testing *c* code and a *.c* file to be compiled which parsed, compiles, and runs test files.
+This is still a work-in-progress, thus only usable on linux/posix machines.
 
-## Example
+## toast.h
+### Example
 ```c
 //file test.c
 #define TOAST_IMPLEMENTATION
@@ -73,7 +73,7 @@ int main() {
 }
 ```
 
-## Toast Basic Terminology
+### Toast Basic Terminology
 
 - `SliceOfToast` - synonymous with a test case.
 - `PackOfToast` - synonymous with a test suite.
@@ -82,6 +82,52 @@ int main() {
 - `BURNT` - a failure or as _int_ `1`
 - `RAW` - not run yet _int_ `-1`
 - `BurnToast` - Metadata/Result to be set in side the a `Toast`
+
+
+## toaster.c
+
+### build
+```console
+$ make 
+```
+Clean up can be performed with `$ make clean`.
+
+### test setup
+1. As of now test files need to be located in a _source directory_, which defaults to `./tests`. 
+2. Testfiles should be named like so `*.test.c`, e.g. `foo.test.c` (as a path relative to the executable it would be `./tests/foo.test.c`
+3. Testfiles contain a collectio  of `SliceOfToast`s. In the form of
+```c
+typedef void(*Toasting)(BurntToast*);
+```
+for example:
+```c 
+void add(BurntToast *burnt) { 
+    if ((1 + 2) == 3) {
+        eat_toast(burnt);
+        return;
+    }  
+    burn_toast(burnt, "Adding went wrong");
+    return; 
+}
+```
+*NOTE* no header files need to be included nor a `main()` function is required as these cases get parsed and written to an actual .c file.
+
+4. Run the test like so:
+```console
+./toaster [OPTIONS]
+-d|--dir <dir>.......... specifies the src directory. [Default: './tests']
+-k|--keep .............. toaster won't remove the files it generated
+-v|--version ........... print the current version of this toaster
+-h|--help .............. print this very text
+```
+
+### Run the example
+From the root of the project:
+1.  `$ cd ./examples`
+2.  `$ make harness`
+
+The exectution is triggered by the `harness` recipe. Comment the last line out if you want to run it with any arguments.
+
 
 ## Documentation
 
